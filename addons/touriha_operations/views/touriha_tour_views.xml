@@ -40,6 +40,7 @@
                            statusbar_visible="draft,confirmed,in_progress,completed"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box"/>
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Tên tour..."/></h1>
                         <label for="code"/>

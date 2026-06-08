@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ===== Costing line: list / form / search (cho menu Bảng chi phí) ===== -->
+    <record id="view_touriha_costing_line_list" model="ir.ui.view">
+        <field name="name">touriha.costing.line.list</field>
+        <field name="model">touriha.costing.line</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="variance_alert">
+                <field name="tour_id"/>
+                <field name="product_id"/>
+                <field name="supplier_id"/>
+                <field name="quantity"/>
+                <field name="finalized_subtotal"/>
+                <field name="actual_subtotal"/>
+                <field name="variance_percent"/>
+                <field name="purchase_order_id" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'estimate'"
+                       decoration-warning="state == 'finalized'"
+                       decoration-primary="state == 'po_created'"
+                       decoration-success="state == 'actual'"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="variance_alert" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_touriha_costing_line_form" model="ir.ui.view">
+        <field name="name">touriha.costing.line.form</field>
+        <field name="model">touriha.costing.line</field>
+        <field name="arch" type="xml">
+            <form string="Dòng chi phí">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="tour_id"/>
+                            <field name="product_id"/>
+                            <field name="supplier_id"/>
+                            <field name="quantity"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="estimate_price"/>
+                            <field name="finalized_price"/>
+                            <field name="override_reason"/>
+                            <field name="actual_price"/>
+                            <field name="variance_percent"/>
+                            <field name="state"/>
+                            <field name="purchase_order_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_touriha_costing_line_search" model="ir.ui.view">
+        <field name="name">touriha.costing.line.search</field>
+        <field name="model">touriha.costing.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="tour_id"/>
+                <field name="product_id"/>
+                <field name="supplier_id"/>
+                <filter name="variance_alert" string="Cảnh báo biến động"
+                        domain="[('variance_alert', '=', True)]"/>
+                <separator/>
+                <filter name="g_tour" string="Tour" context="{'group_by': 'tour_id'}"/>
+                <filter name="g_supplier" string="Nhà cung cấp" context="{'group_by': 'supplier_id'}"/>
+                <filter name="g_state" string="Trạng thái" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_touriha_costing_line" model="ir.actions.act_window">
+        <field name="name">Bảng chi phí</field>
+        <field name="res_model">touriha.costing.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_touriha_costing_line"
+              name="Bảng chi phí"
+              parent="touriha_base.touriha_costing_menu"
+              action="action_touriha_costing_line"
+              sequence="10"/>
+
+    <!-- ===== Tour form: tab Costing + nút Tạo PO + stat button ===== -->
+    <record id="view_touriha_tour_form_costing" model="ir.ui.view">
+        <field name="name">touriha.tour.form.costing</field>
+        <field name="model">touriha.tour</field>
+        <field name="inherit_id" ref="touriha_operations.view_touriha_tour_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <button name="action_create_purchase_orders" type="object"
+                        string="Tạo PO" class="btn-secondary"
+                        invisible="state in ('draft', 'cancelled')"/>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_purchase_orders" type="object"
+                        class="oe_stat_button" icon="fa-shopping-cart"
+                        invisible="purchase_order_count == 0">
+                    <field name="purchase_order_count" widget="statinfo" string="Đơn mua"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Chi phí (Costing)" name="costing">
+                    <field name="costing_line_ids">
+                        <list editable="bottom" decoration-warning="variance_alert">
+                            <field name="product_id"/>
+                            <field name="supplier_id"/>
+                            <field name="quantity"/>
+                            <field name="estimate_price"/>
+                            <field name="finalized_price"/>
+                            <field name="override_reason"/>
+                            <field name="actual_price"/>
+                            <field name="variance_percent"/>
+                            <field name="purchase_order_id" readonly="1" optional="show"/>
+                            <field name="state" widget="badge"
+                                   decoration-info="state == 'estimate'"
+                                   decoration-warning="state == 'finalized'"
+                                   decoration-primary="state == 'po_created'"
+                                   decoration-success="state == 'actual'"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="variance_alert" column_invisible="1"/>
+                        </list>
+                    </field>
+                    <group>
+                        <group/>
+                        <group>
+                            <field name="cost_estimate_total"/>
+                            <field name="cost_finalized_total"/>
+                            <field name="cost_actual_total"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

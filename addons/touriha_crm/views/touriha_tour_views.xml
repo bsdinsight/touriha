@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_touriha_tour_form_crm" model="ir.ui.view">
+        <field name="name">touriha.tour.form.crm</field>
+        <field name="model">touriha.tour</field>
+        <field name="inherit_id" ref="touriha_operations.view_touriha_tour_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_title']" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_sale_order" type="object"
+                            class="oe_stat_button" icon="fa-dollar"
+                            invisible="not sale_order_id">
+                        <div class="o_stat_info">
+                            <span class="o_stat_text">Báo giá</span>
+                        </div>
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

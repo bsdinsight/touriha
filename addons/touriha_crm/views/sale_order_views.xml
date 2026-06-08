@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_touriha" model="ir.ui.view">
+        <field name="name">sale.order.form.touriha</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_tour" type="object"
+                        class="oe_stat_button" icon="fa-suitcase"
+                        invisible="not tour_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Tour</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_tour"/>
+                <field name="tour_type" invisible="not is_tour"/>
+                <field name="tour_start_date" invisible="not is_tour"/>
+                <field name="tour_end_date" invisible="not is_tour"/>
+            </xpath>
+
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-warning" role="alert"
+                     invisible="not passport_warning">
+                    <field name="passport_warning"/>
+                </div>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Hành khách" name="touriha_passengers"
+                      invisible="not is_tour">
+                    <field name="passenger_ids">
+                        <list editable="bottom">
+                            <field name="name"/>
+                            <field name="pax_type"/>
+                            <field name="birth_date"/>
+                            <field name="passport_number"/>
+                            <field name="passport_expiry"/>
+                            <field name="rooming_group"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

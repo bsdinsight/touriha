@@ -6,8 +6,10 @@ class TourihaPassenger(models.Model):
     _description = "Hành khách trong tour"
     _order = "tour_id, id"
 
+    # Optional: hành khách có thể được nhập ở báo giá (sale.order) trước khi có tour;
+    # touriha_crm gắn sale_order_id và set tour_id khi xác nhận báo giá.
     tour_id = fields.Many2one(
-        "touriha.tour", string="Tour", required=True, ondelete="cascade"
+        "touriha.tour", string="Tour", ondelete="cascade", index=True
     )
     partner_id = fields.Many2one("res.partner", string="Liên hệ")
     name = fields.Char("Họ tên", required=True)

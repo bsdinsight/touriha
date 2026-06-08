@@ -44,4 +44,4 @@ docker compose run --rm touriha_odoo odoo -d touriha -i touriha_operations --sto
 ## Domain (DỄ NHẦM — kiểm tra kỹ)
 - `touriha.com` — sản phẩm/landing (Cloudflare).
 - `doc.bsdinsight.com` / `bsdinsight.com` — docs + site công ty (KHÔNG 's').
-- `turiha.bsdinsights.com` — demo qua Cloudflare tunnel (CÓ 's'; cần xác nhận lại 'turiha' vs 'touriha').
+- `touriha.bsdinsights.com` — demo qua Cloudflare tunnel (zone `bsdinsights.com` CÓ 's', khác `bsdinsight.com` của site công ty).

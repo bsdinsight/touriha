@@ -41,7 +41,7 @@ docker compose run --rm touriha_odoo odoo -d touriha -u touriha_operations --sto
 
 - Kiến trúc & lộ trình: [`docs/architecture.md`](docs/architecture.md)
 - Hướng dẫn cho dev / Claude: [`CLAUDE.md`](CLAUDE.md)
-- Demo: https://turiha.bsdinsights.com
+- Demo: https://touriha.bsdinsights.com
 
 ## License
 

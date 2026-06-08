@@ -1,0 +1,13 @@
+[options]
+; ====== Touriha – Odoo 19 ======
+; Sao chép file này thành config/odoo.conf rồi đổi admin_passwd.
+admin_passwd = CHANGE_ME_master_password
+db_host = touriha_db
+db_port = 5432
+db_user = odoo
+db_password = odoo
+addons_path = /mnt/extra-addons
+; Bật khi chạy sau Cloudflare tunnel / reverse proxy:
+proxy_mode = True
+; Production nên khoá DB hiển thị:
+; dbfilter = ^touriha$

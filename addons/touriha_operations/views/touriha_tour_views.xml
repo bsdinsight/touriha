@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_touriha_tour_list" model="ir.ui.view">
+        <field name="name">touriha.tour.list</field>
+        <field name="model">touriha.tour</field>
+        <field name="arch" type="xml">
+            <list string="Tours">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="tour_type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="passenger_count"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'in_progress'"
+                       decoration-success="state in ('confirmed', 'completed')"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_touriha_tour_form" model="ir.ui.view">
+        <field name="name">touriha.tour.form</field>
+        <field name="model">touriha.tour</field>
+        <field name="arch" type="xml">
+            <form string="Tour">
+                <header>
+                    <button name="action_confirm" type="object" string="Xác nhận"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_start" type="object" string="Bắt đầu tour"
+                            class="btn-primary" invisible="state != 'confirmed'"/>
+                    <button name="action_complete" type="object" string="Hoàn thành"
+                            class="btn-primary" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" type="object" string="Hủy"
+                            invisible="state in ('completed', 'cancelled')"/>
+                    <button name="action_reset_to_draft" type="object" string="Về nháp"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Tên tour..."/></h1>
+                        <label for="code"/>
+                        <field name="code"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="tour_type"/>
+                            <field name="customer_id"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="duration_days"/>
+                        </group>
+                        <group>
+                            <field name="min_pax"/>
+                            <field name="max_pax"/>
+                            <field name="passenger_count"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Hành khách" name="passengers">
+                            <field name="passenger_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="pax_type"/>
+                                    <field name="birth_date"/>
+                                    <field name="passport_number"/>
+                                    <field name="passport_expiry"/>
+                                    <field name="rooming_group"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Ghi chú" name="note">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_touriha_tour_search" model="ir.ui.view">
+        <field name="name">touriha.tour.search</field>
+        <field name="model">touriha.tour</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="customer_id"/>
+                <filter name="draft" string="Nháp" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="Đã xác nhận" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="in_progress" string="Đang chạy" domain="[('state', '=', 'in_progress')]"/>
+                <separator/>
+                <filter name="group_state" string="Trạng thái" context="{'group_by': 'state'}"/>
+                <filter name="group_type" string="Loại tour" context="{'group_by': 'tour_type'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_touriha_tour" model="ir.actions.act_window">
+        <field name="name">Tours</field>
+        <field name="res_model">touriha.tour</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Tạo tour đầu tiên của bạn</p>
+        </field>
+    </record>
+</odoo>

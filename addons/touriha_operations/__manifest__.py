@@ -1,0 +1,20 @@
+{
+    "name": "Touriha – Điều hành (Operations)",
+    "version": "19.0.1.0.0",
+    "summary": "Quản lý Tour & danh sách hành khách (passenger grid)",
+    "category": "Services/Touriha",
+    "author": "BSD Insight",
+    "license": "LGPL-3",
+    "website": "https://touriha.com",
+    "support": "daibt@bsdinsight.com",
+    "maintainer": "BSD Insight",
+    "depends": ["touriha_base", "contacts", "mail"],
+    "data": [
+        "security/ir.model.access.csv",
+        "data/touriha_sequence.xml",
+        "views/touriha_tour_views.xml",
+        "views/touriha_operations_menu.xml",
+    ],
+    "application": False,
+    "installable": True,
+}

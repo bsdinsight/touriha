@@ -1,0 +1,36 @@
+services:
+  touriha_db:
+    image: postgres:15
+    container_name: touriha_db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - touriha_db_data:/var/lib/postgresql/data/pgdata
+    restart: unless-stopped
+
+  touriha_odoo:
+    image: odoo:19.0
+    platform: linux/arm64/v8
+    container_name: touriha_odoo
+    depends_on:
+      - touriha_db
+    ports:
+      # 8169 để KHÔNG đụng frm-pro-odoo (8069). 8172 = websocket/longpolling.
+      - "8169:8069"
+      - "8172:8072"
+    environment:
+      HOST: touriha_db
+      USER: odoo
+      PASSWORD: odoo
+    volumes:
+      - touriha_odoo_data:/var/lib/odoo
+      - ./addons:/mnt/extra-addons
+      - ./config/odoo.conf:/etc/odoo/odoo.conf
+    restart: unless-stopped
+
+volumes:
+  touriha_db_data:
+  touriha_odoo_data:

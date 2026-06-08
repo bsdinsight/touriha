@@ -1,0 +1,14 @@
+# cloudflared tunnel config — demo Touriha.
+# Sao chép thành ~/.cloudflared/config.yml (hoặc chạy: cloudflared tunnel run touriha-demo)
+#
+# LƯU Ý hostname: bạn yêu cầu "turiha.bsdinsights.com" (CÓ chữ 's' trong bsdinsights;
+# và "turiha" thiếu chữ 'o' so với sản phẩm touriha.com — xác nhận lại trước khi tạo DNS).
+
+tunnel: <TUNNEL_UUID>
+credentials-file: /Users/bsd/.cloudflared/<TUNNEL_UUID>.json
+
+ingress:
+  - hostname: turiha.bsdinsights.com
+    service: http://localhost:8169
+  # websocket Odoo (live chat, bus) — cloudflared tự xử lý ws qua cùng hostname
+  - service: http_status:404

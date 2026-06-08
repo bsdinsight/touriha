@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu gốc + các nhóm chức năng. Module con gắn action vào đây. -->
+    <menuitem id="touriha_root_menu" name="Touriha" sequence="1"/>
+
+    <menuitem id="touriha_crm_menu" name="Kinh doanh"
+              parent="touriha_root_menu" sequence="10"/>
+    <menuitem id="touriha_operations_menu" name="Điều hành"
+              parent="touriha_root_menu" sequence="20"/>
+    <menuitem id="touriha_costing_menu" name="Chi phí (Costing)"
+              parent="touriha_root_menu" sequence="30"/>
+    <menuitem id="touriha_supplier_menu" name="Nhà cung cấp"
+              parent="touriha_root_menu" sequence="40"/>
+    <menuitem id="touriha_config_menu" name="Cấu hình"
+              parent="touriha_root_menu" sequence="90"/>
+</odoo>

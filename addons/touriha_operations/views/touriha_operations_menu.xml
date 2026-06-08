@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_touriha_tour"
+              name="Tours"
+              parent="touriha_base.touriha_operations_menu"
+              action="action_touriha_tour"
+              sequence="10"/>
+</odoo>

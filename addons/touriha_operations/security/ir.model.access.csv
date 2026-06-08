@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_touriha_tour,touriha.tour,model_touriha_tour,base.group_user,1,1,1,1
+access_touriha_passenger,touriha.passenger,model_touriha_passenger,base.group_user,1,1,1,1

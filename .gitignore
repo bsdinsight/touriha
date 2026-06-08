@@ -1,0 +1,34 @@
+# ── OS / editor ──
+.DS_Store
+*.swp
+*~
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ── Odoo runtime / data (odoo.conf giữ secret; track odoo.conf.example) ──
+config/odoo.conf
+backups/
+filestore/
+*.log
+
+# ── Claude local state ──
+.claude/
+
+# ── Mobile (Expo / iOS / Android) ──
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/ios/Pods/
+mobile/ios/build/
+mobile/android/build/
+mobile/android/.gradle/
+mobile/android/app/build/
+
+# ── Cloudflare tunnel credentials (NEVER commit) ──
+cloudflare/*.json
+.env

@@ -9,5 +9,6 @@ db_password = odoo
 addons_path = /mnt/extra-addons
 ; Bật khi chạy sau Cloudflare tunnel / reverse proxy:
 proxy_mode = True
-; Production nên khoá DB hiển thị:
+; Demo/production — chỉ phục vụ 1 DB & ẩn trình quản lý DB (bỏ ; để bật):
 ; dbfilter = ^touriha$
+; list_db = False

@@ -19,6 +19,12 @@ cp cloudflare/config.example.yml ~/.cloudflared/config.yml
 ```
 Trong `config/odoo.conf` đã bật `proxy_mode = True` (bắt buộc khi chạy sau tunnel).
 
+**Demo 1-DB** (để domain vào thẳng login, không hiện database selector): đặt `dbfilter = ^touriha$` + `list_db = False` trong `config/odoo.conf`, rồi tạo DB tên `touriha`:
+```bash
+docker compose run --rm touriha_odoo odoo -d touriha -i touriha_crm,touriha_costing --stop-after-init
+docker compose restart touriha_odoo
+```
+
 ## Chạy
 ```bash
 docker compose up -d            # Odoo ở 8169

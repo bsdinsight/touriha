@@ -32,3 +32,9 @@ mobile/android/app/build/
 # ── Cloudflare tunnel credentials (NEVER commit) ──
 cloudflare/*.json
 .env
+
+# ── VPS runtime (docker-compose.vps.yml) — KHÔNG commit ──
+/data/
+/postgres-data/
+/restore/
+backups/

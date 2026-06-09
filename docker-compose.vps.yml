@@ -1,0 +1,60 @@
+# Touriha — VPS stack. 1 Postgres + 1 Odoo phục vụ NHIỀU DB (route theo subdomain
+# qua dbfilter=^%d$), fronted bởi 1 Cloudflare Tunnel. Chạy chung VPS với các app
+# khác theo cùng mô hình: mỗi app 1 stack độc lập, KHÔNG mở host port → không đụng port.
+#
+# Trên VPS:
+#   cd /root/touriha
+#   cp deploy/.env.example .env && nano .env
+#   docker compose -f docker-compose.vps.yml up -d db
+#   docker compose -f docker-compose.vps.yml up -d odoo
+#   docker compose -f docker-compose.vps.yml --profile tunnel up -d cloudflared
+name: touriha
+
+services:
+  db:
+    image: postgres:16
+    container_name: touriha-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  odoo:
+    image: odoo:19
+    container_name: touriha-odoo
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - ./deploy/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./addons:/mnt/extra-addons:ro
+      - ./data:/var/lib/odoo
+    # Không mở host port — cloudflared (cùng network) reach odoo:8069.
+    # Debug one-off: docker compose -f docker-compose.vps.yml exec odoo bash
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: touriha-cloudflared
+    restart: unless-stopped
+    # Profile để cloudflared mặc định KHÔNG chạy. Bật bằng `--profile tunnel` để nó
+    # join network touriha_default (phân giải được service `odoo`); chạy rời sẽ lỗi
+    # "lookup odoo on 8.8.8.8:53: no such host".
+    profiles: ["tunnel"]
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?set TUNNEL_TOKEN in .env}
+    depends_on:
+      - odoo

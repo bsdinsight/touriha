@@ -19,11 +19,27 @@ nano deploy/odoo.conf     # đổi admin_passwd = <master mạnh>
 ```
 > ⚠ Đặt `POSTGRES_PASSWORD` TRƯỚC lần `up -d db` đầu — Postgres chỉ áp khi init data dir rỗng.
 
-## 2. Cloudflare Tunnel
-Tái dùng tunnel touriha hiện có (đang chạy trên laptop) hoặc tạo mới:
-1. Zero Trust → Networks → Tunnels → (tunnel touriha) → copy **token** → dán vào `.env` ở `TUNNEL_TOKEN=` (KHÔNG commit / paste chat).
-2. Tab **Public Hostnames**: `touriha`.`bsdinsights.com` → Service **HTTP** `http://odoo:8069`, Path **để TRỐNG**.
-3. **Tắt cloudflared trên laptop** để chỉ VPS phục vụ tunnel này (`pkill cloudflared` hoặc xoá route laptop).
+## 2. Cloudflare Tunnel — tunnel RIÊNG cho touriha (local-managed)
+> ⚠️ Mỗi app 1 tunnel riêng. ĐỪNG ké tunnel app khác (vd "Agrione VPS"): connector của nó nằm ở
+> docker-network khác → `odoo:8069` trỏ sang odoo app đó (không có DB touriha) → "database selector".
+
+Trên máy đã `cloudflared tunnel login` (có `~/.cloudflared/cert.pem`):
+```bash
+cloudflared tunnel create touriha-vps
+cloudflared tunnel route dns --overwrite-dns touriha-vps touriha.bsdinsights.com   # repoint DNS
+scp ~/.cloudflared/<UUID>.json root@<VPS_HOST>:/root/touriha/cloudflare/tunnel-creds.json
+ssh root@<VPS_HOST> 'chmod 644 /root/touriha/cloudflare/tunnel-creds.json'   # cloudflared non-root phải đọc được
+```
+Tạo `/root/touriha/cloudflare/config.yml`:
+```yaml
+tunnel: <UUID>
+credentials-file: /etc/cloudflared/tunnel-creds.json
+ingress:
+  - hostname: touriha.bsdinsights.com
+    service: http://odoo:8069
+  - service: http_status:404
+```
+(`dbfilter=^touriha$` trong `deploy/odoo.conf` để Host mà cloudflared gửi không làm sai `%d`.) Bật connector ở §3 (`--profile tunnel up -d cloudflared`).
 
 ## 3. Bật stack
 ```bash

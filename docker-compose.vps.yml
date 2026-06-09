@@ -51,12 +51,14 @@ services:
     image: cloudflare/cloudflared:latest
     container_name: touriha-cloudflared
     restart: unless-stopped
-    # Profile để cloudflared mặc định KHÔNG chạy. Bật bằng `--profile tunnel` để nó
-    # join network touriha_default (phân giải được service `odoo`); chạy rời sẽ lỗi
-    # "lookup odoo on 8.8.8.8:53: no such host".
+    # Bật bằng `--profile tunnel`. Local-managed (config + credentials) vì tunnel touriha-vps
+    # tạo qua cloudflared CLI. Connector join network touriha_default → reach `odoo:8069`
+    # (= touriha-odoo). Xem deploy/DEPLOY.md §2.
+    # LƯU Ý: tunnel-creds.json phải chmod 644 (cloudflared chạy non-root, không đọc file 0400).
     profiles: ["tunnel"]
-    command: tunnel --no-autoupdate run
-    environment:
-      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?set TUNNEL_TOKEN in .env}
+    command: tunnel --no-autoupdate --config /etc/cloudflared/config.yml run
+    volumes:
+      - ./cloudflare/config.yml:/etc/cloudflared/config.yml:ro
+      - ./cloudflare/tunnel-creds.json:/etc/cloudflared/tunnel-creds.json:ro
     depends_on:
       - odoo

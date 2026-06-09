@@ -29,8 +29,9 @@ mobile/android/build/
 mobile/android/.gradle/
 mobile/android/app/build/
 
-# ── Cloudflare tunnel credentials (NEVER commit) ──
+# ── Cloudflare tunnel credentials + config riêng deployment (NEVER commit) ──
 cloudflare/*.json
+cloudflare/config.yml
 .env
 
 # ── VPS runtime (docker-compose.vps.yml) — KHÔNG commit ──

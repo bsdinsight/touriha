@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ===== Chính sách hủy ===== -->
+    <record id="view_cancellation_policy_list" model="ir.ui.view">
+        <field name="name">touriha.cancellation.policy.list</field>
+        <field name="model">touriha.cancellation.policy</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="tour_type"/>
+                <field name="priority"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cancellation_policy_form" model="ir.ui.view">
+        <field name="name">touriha.cancellation.policy.form</field>
+        <field name="model">touriha.cancellation.policy</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="tour_type"/>
+                        </group>
+                        <group>
+                            <field name="priority"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="rule_ids">
+                        <list editable="bottom">
+                            <field name="days_before"/>
+                            <field name="penalty_rate"/>
+                        </list>
+                    </field>
+                    <div class="text-muted">
+                        Hủy trước số ngày ≥ ngưỡng nào thì áp mức phạt của ngưỡng cao nhất phù hợp.
+                        Vd: ngưỡng 30→0%, 15→10%, 7→30%, 3→50%, 0→100%; hủy trước 20 ngày = 10%.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cancellation_policy" model="ir.actions.act_window">
+        <field name="name">Chính sách hủy</field>
+        <field name="res_model">touriha.cancellation.policy</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_cancellation_policy"
+              name="Chính sách hủy"
+              parent="touriha_base.touriha_config_menu"
+              action="action_cancellation_policy"
+              sequence="30"/>
+
+    <!-- ===== Yêu cầu hủy ===== -->
+    <record id="view_cancellation_request_list" model="ir.ui.view">
+        <field name="name">touriha.cancellation.request.list</field>
+        <field name="model">touriha.cancellation.request</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'rejected'" decoration-success="state == 'done'">
+                <field name="tour_id"/>
+                <field name="cancellation_date"/>
+                <field name="cancellation_by"/>
+                <field name="days_before_departure"/>
+                <field name="penalty_rate"/>
+                <field name="refund_amount"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'approved'"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'rejected'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cancellation_request_form" model="ir.ui.view">
+        <field name="name">touriha.cancellation.request.form</field>
+        <field name="model">touriha.cancellation.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve" type="object" string="Duyệt hủy"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_done" type="object" string="Đã hoàn tiền"
+                            class="btn-primary" invisible="state != 'approved'"/>
+                    <button name="action_reject" type="object" string="Từ chối"
+                            invisible="state not in ('draft', 'approved')"/>
+                    <button name="action_draft" type="object" string="Về nháp"
+                            invisible="state != 'rejected'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,approved,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="tour_id"/>
+                            <field name="cancellation_date"/>
+                            <field name="cancellation_by"/>
+                            <field name="reason"/>
+                        </group>
+                        <group>
+                            <field name="total_amount"/>
+                            <field name="days_before_departure"/>
+                            <field name="policy_id"/>
+                            <field name="refund_method"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Tính phí hủy &amp; hoàn tiền">
+                        <group>
+                            <field name="penalty_rate"/>
+                            <field name="penalty_amount"/>
+                        </group>
+                        <group>
+                            <field name="refund_amount"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cancellation_request_search" model="ir.ui.view">
+        <field name="name">touriha.cancellation.request.search</field>
+        <field name="model">touriha.cancellation.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="tour_id"/>
+                <filter name="draft" string="Nháp" domain="[('state', '=', 'draft')]"/>
+                <filter name="approved" string="Đã duyệt" domain="[('state', '=', 'approved')]"/>
+                <filter name="done" string="Đã hoàn tiền" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter name="g_by" string="Bên hủy" context="{'group_by': 'cancellation_by'}"/>
+                <filter name="g_state" string="Trạng thái" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_cancellation_request" model="ir.actions.act_window">
+        <field name="name">Yêu cầu hủy</field>
+        <field name="res_model">touriha.cancellation.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_cancellation_request"
+              name="Yêu cầu hủy"
+              parent="touriha_base.touriha_operations_menu"
+              action="action_cancellation_request"
+              sequence="20"/>
+
+    <!-- ===== Nút trên form Tour ===== -->
+    <record id="view_touriha_tour_form_cancellation" model="ir.ui.view">
+        <field name="name">touriha.tour.form.cancellation</field>
+        <field name="model">touriha.tour</field>
+        <field name="inherit_id" ref="touriha_operations.view_touriha_tour_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_open_cancellation" type="object"
+                        string="Yêu cầu hủy"
+                        invisible="state in ('cancelled', 'completed')"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

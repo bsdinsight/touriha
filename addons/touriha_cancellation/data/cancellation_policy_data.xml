@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Nội địa: ≥30d=0%, 15-29=10%, 7-14=30%, 3-6=50%, 0-2=100% -->
+        <record id="policy_domestic" model="touriha.cancellation.policy">
+            <field name="name">Nội địa (mặc định)</field>
+            <field name="tour_type">domestic</field>
+        </record>
+        <record id="rule_dom_30" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_domestic"/>
+            <field name="days_before">30</field>
+            <field name="penalty_rate">0</field>
+        </record>
+        <record id="rule_dom_15" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_domestic"/>
+            <field name="days_before">15</field>
+            <field name="penalty_rate">10</field>
+        </record>
+        <record id="rule_dom_7" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_domestic"/>
+            <field name="days_before">7</field>
+            <field name="penalty_rate">30</field>
+        </record>
+        <record id="rule_dom_3" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_domestic"/>
+            <field name="days_before">3</field>
+            <field name="penalty_rate">50</field>
+        </record>
+        <record id="rule_dom_0" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_domestic"/>
+            <field name="days_before">0</field>
+            <field name="penalty_rate">100</field>
+        </record>
+
+        <!-- Outbound: ≥45d=0%, 30-44=25%, 15-29=50%, 7-14=75%, 0-6=100% -->
+        <record id="policy_outbound" model="touriha.cancellation.policy">
+            <field name="name">Outbound (mặc định)</field>
+            <field name="tour_type">outbound</field>
+        </record>
+        <record id="rule_out_45" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_outbound"/>
+            <field name="days_before">45</field>
+            <field name="penalty_rate">0</field>
+        </record>
+        <record id="rule_out_30" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_outbound"/>
+            <field name="days_before">30</field>
+            <field name="penalty_rate">25</field>
+        </record>
+        <record id="rule_out_15" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_outbound"/>
+            <field name="days_before">15</field>
+            <field name="penalty_rate">50</field>
+        </record>
+        <record id="rule_out_7" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_outbound"/>
+            <field name="days_before">7</field>
+            <field name="penalty_rate">75</field>
+        </record>
+        <record id="rule_out_0" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_outbound"/>
+            <field name="days_before">0</field>
+            <field name="penalty_rate">100</field>
+        </record>
+
+        <!-- Fallback cho mọi loại tour khác -->
+        <record id="policy_all" model="touriha.cancellation.policy">
+            <field name="name">Mặc định (mọi loại)</field>
+            <field name="tour_type">all</field>
+            <field name="priority">1</field>
+        </record>
+        <record id="rule_all_15" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_all"/>
+            <field name="days_before">15</field>
+            <field name="penalty_rate">0</field>
+        </record>
+        <record id="rule_all_7" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_all"/>
+            <field name="days_before">7</field>
+            <field name="penalty_rate">30</field>
+        </record>
+        <record id="rule_all_0" model="touriha.cancellation.penalty.rule">
+            <field name="policy_id" ref="policy_all"/>
+            <field name="days_before">0</field>
+            <field name="penalty_rate">100</field>
+        </record>
+    </data>
+</odoo>

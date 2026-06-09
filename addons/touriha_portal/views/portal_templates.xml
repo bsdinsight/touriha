@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Thẻ trên trang /my -->
+    <template id="portal_my_home_touriha" inherit_id="portal.portal_my_home"
+              name="Touriha PO – Home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'fa-shopping-cart'"/>
+                <t t-set="title">Đơn mua hàng (PO)</t>
+                <t t-set="url" t-value="'/my/touriha/purchases'"/>
+                <t t-set="text">Xem &amp; xác nhận đơn mua từ Touriha</t>
+                <t t-set="placeholder_count" t-value="'touriha_po_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Danh sách PO của nhà cung cấp -->
+    <template id="portal_my_touriha_purchases" name="My Touriha POs">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Đơn mua hàng</t>
+            </t>
+            <t t-if="not purchases">
+                <div class="alert alert-info" role="alert">Chưa có đơn mua hàng nào.</div>
+            </t>
+            <t t-if="purchases">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Số PO</th>
+                                <th>Tour</th>
+                                <th>Ngày</th>
+                                <th class="text-end">Tổng</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="purchases" t-as="po">
+                                <td>
+                                    <a t-attf-href="/my/touriha/purchase/{{po.id}}">
+                                        <t t-esc="po.name"/>
+                                    </a>
+                                </td>
+                                <td><t t-esc="po.tour_id.name or po.origin or ''"/></td>
+                                <td><span t-field="po.date_order" t-options='{"widget": "date"}'/></td>
+                                <td class="text-end">
+                                    <span t-field="po.amount_total"
+                                          t-options='{"widget": "monetary", "display_currency": po.currency_id}'/>
+                                </td>
+                                <td>
+                                    <span t-attf-class="badge #{po.state == 'purchase' and 'text-bg-success' or (po.state == 'cancel' and 'text-bg-danger' or 'text-bg-secondary')}">
+                                        <t t-esc="po.state"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Chi tiết PO + nút Chấp nhận/Từ chối -->
+    <template id="portal_touriha_purchase_detail" name="Touriha PO Detail">
+        <t t-call="portal.portal_layout">
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="mb-1">Đơn mua hàng <span t-field="po.name"/></h3>
+                    <p class="text-muted">
+                        Tour: <b><t t-esc="po.tour_id.name or po.origin or ''"/></b>
+                        · Trạng thái: <b><t t-esc="po.state"/></b>
+                    </p>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Dịch vụ</th>
+                                    <th class="text-end">Số lượng</th>
+                                    <th class="text-end">Đơn giá</th>
+                                    <th class="text-end">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="po.order_line" t-as="line">
+                                    <td><t t-esc="line.product_id.display_name or line.name"/></td>
+                                    <td class="text-end"><t t-esc="line.product_qty"/></td>
+                                    <td class="text-end">
+                                        <span t-field="line.price_unit"
+                                              t-options='{"widget": "monetary", "display_currency": po.currency_id}'/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-field="line.price_subtotal"
+                                              t-options='{"widget": "monetary", "display_currency": po.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><b>Tổng cộng</b></td>
+                                    <td class="text-end">
+                                        <b><span t-field="po.amount_total"
+                                                 t-options='{"widget": "monetary", "display_currency": po.currency_id}'/></b>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <t t-if="po.state in ['draft', 'sent']">
+                        <form t-attf-action="/my/touriha/purchase/{{po.id}}/accept" method="post"
+                              class="d-inline-block me-2">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-check me-1"/>Chấp nhận
+                            </button>
+                        </form>
+                        <button type="button" class="btn btn-outline-danger"
+                                data-bs-toggle="collapse" data-bs-target="#touriha_reject">
+                            <i class="fa fa-times me-1"/>Từ chối
+                        </button>
+                        <div class="collapse mt-3" id="touriha_reject">
+                            <form t-attf-action="/my/touriha/purchase/{{po.id}}/reject" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <textarea name="reason" class="form-control mb-2" rows="2"
+                                          placeholder="Lý do từ chối (vd: hết phòng, sai giá...)"/>
+                                <button type="submit" class="btn btn-danger">Xác nhận từ chối</button>
+                            </form>
+                        </div>
+                    </t>
+                    <t t-if="po.state == 'purchase'">
+                        <div class="alert alert-success" role="alert">✓ Bạn đã chấp nhận đơn này.</div>
+                    </t>
+                    <t t-if="po.state == 'cancel'">
+                        <div class="alert alert-danger" role="alert">
+                            Đơn đã bị từ chối / hủy.
+                            <t t-if="po.rejection_reason"><br/>Lý do: <t t-esc="po.rejection_reason"/></t>
+                        </div>
+                    </t>
+
+                    <div class="mt-3">
+                        <a href="/my/touriha/purchases" class="btn btn-link">← Về danh sách</a>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -28,7 +28,9 @@ services:
       retries: 5
 
   odoo:
-    image: odoo:19
+    # Pin odoo:19.0 (bản đã verify, khớp compose local). KHÔNG dùng tag rolling `odoo:19`
+    # — nightly 06/2026 từng regression vỡ ở base install (nạp cờ ngôn ngữ res.lang).
+    image: odoo:19.0
     container_name: touriha-odoo
     restart: unless-stopped
     depends_on:

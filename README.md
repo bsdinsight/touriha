@@ -28,8 +28,8 @@ cp config/odoo.conf.example config/odoo.conf   # đổi admin_passwd
 docker compose up -d
 ```
 
-Mở http://localhost:8169 → tạo database → cài app **Touriha**.
-(Cổng 8169 để không đụng các stack Odoo khác đang chạy 8069.)
+Mở http://localhost:8569 → tạo database → cài app **Touriha**.
+(Cổng 8569 để không đụng các stack Odoo khác đang chạy 8069.)
 
 Cập nhật module bằng dòng lệnh:
 

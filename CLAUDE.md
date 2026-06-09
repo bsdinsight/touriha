@@ -34,7 +34,7 @@ Tham khảo phong cách: bộ module `frm_*` tại `/Users/bsd/frm-pro-odoo/addo
 ```bash
 cp config/odoo.conf.example config/odoo.conf   # chỉnh admin_passwd
 docker compose up -d
-# Odoo: http://localhost:8169  (8169 để không đụng frm-pro ở 8069)
+# Odoo: http://localhost:8569  (8569 để không đụng frm-pro ở 8069)
 ```
 Cài/cập nhật một module:
 ```bash

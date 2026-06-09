@@ -8,6 +8,6 @@ credentials-file: /Users/bsd/.cloudflared/<TUNNEL_UUID>.json
 
 ingress:
   - hostname: touriha.bsdinsights.com
-    service: http://localhost:8169
+    service: http://localhost:8569
   # websocket Odoo (live chat, bus) — cloudflared tự xử lý ws qua cùng hostname
   - service: http_status:404

@@ -18,9 +18,9 @@ services:
     depends_on:
       - touriha_db
     ports:
-      # 8169 để KHÔNG đụng frm-pro-odoo (8069). 8172 = websocket/longpolling.
-      - "8169:8069"
-      - "8172:8072"
+      # 8569/8572: tránh đụng các stack Odoo khác trên máy (8069 frm, 8169 realtypro, 8369 bsdinsight...).
+      - "8569:8069"
+      - "8572:8072"
     environment:
       HOST: touriha_db
       USER: odoo

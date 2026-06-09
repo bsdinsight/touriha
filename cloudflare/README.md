@@ -1,6 +1,6 @@
 # Cloudflare Tunnel — demo Touriha
 
-Đưa Odoo local (`localhost:8169`) ra `https://touriha.bsdinsights.com` mà không mở port.
+Đưa Odoo local (`localhost:8569`) ra `https://touriha.bsdinsights.com` mà không mở port.
 
 > Lưu ý: zone demo là **`bsdinsights.com`** (CÓ **'s'**) — khác site công ty *bsdinsight.com*.
 
@@ -27,7 +27,7 @@ docker compose restart touriha_odoo
 
 ## Chạy
 ```bash
-docker compose up -d            # Odoo ở 8169
+docker compose up -d            # Odoo ở 8569
 cloudflared tunnel run touriha-demo
 ```
 Tùy chọn chạy nền: `cloudflared service install` (macOS launchd).

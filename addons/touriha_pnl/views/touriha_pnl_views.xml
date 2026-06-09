@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tab P&L trên form Tour -->
+    <record id="view_touriha_tour_form_pnl" model="ir.ui.view">
+        <field name="name">touriha.tour.form.pnl</field>
+        <field name="model">touriha.tour</field>
+        <field name="inherit_id" ref="touriha_operations.view_touriha_tour_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='costing']" position="after">
+                <page string="P&amp;L" name="pnl">
+                    <group>
+                        <group string="Doanh thu &amp; Chi phí">
+                            <field name="revenue"/>
+                            <field name="cost_estimate_total"/>
+                            <field name="cost_finalized_total"/>
+                            <field name="cost_actual_total"/>
+                        </group>
+                        <group string="Lợi nhuận">
+                            <field name="gross_profit"/>
+                            <field name="margin"/>
+                            <field name="actual_profit"/>
+                            <field name="actual_margin"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">
+                        Doanh thu lấy từ báo giá (sale order) gắn với tour; chi phí từ bảng Costing.
+                        Lợi nhuận kế hoạch = Doanh thu − Tổng chốt; thực tế = Doanh thu − Tổng thực tế.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Pivot -->
+    <record id="view_touriha_pnl_pivot" model="ir.ui.view">
+        <field name="name">touriha.tour.pnl.pivot</field>
+        <field name="model">touriha.tour</field>
+        <field name="arch" type="xml">
+            <pivot string="P&amp;L theo Tour">
+                <field name="tour_type" type="row"/>
+                <field name="revenue" type="measure"/>
+                <field name="cost_finalized_total" type="measure"/>
+                <field name="gross_profit" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Graph -->
+    <record id="view_touriha_pnl_graph" model="ir.ui.view">
+        <field name="name">touriha.tour.pnl.graph</field>
+        <field name="model">touriha.tour</field>
+        <field name="arch" type="xml">
+            <graph string="Lợi nhuận theo Tour" type="bar">
+                <field name="name"/>
+                <field name="gross_profit" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- List P&L -->
+    <record id="view_touriha_pnl_list" model="ir.ui.view">
+        <field name="name">touriha.tour.pnl.list</field>
+        <field name="model">touriha.tour</field>
+        <field name="arch" type="xml">
+            <list string="P&amp;L theo Tour" create="false">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="tour_type"/>
+                <field name="state"/>
+                <field name="revenue" sum="Doanh thu"/>
+                <field name="cost_finalized_total" sum="Chi phí chốt"/>
+                <field name="cost_actual_total" sum="Chi phí thực tế"/>
+                <field name="gross_profit" sum="Lợi nhuận"/>
+                <field name="margin" widget="float" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="view_touriha_pnl_search" model="ir.ui.view">
+        <field name="name">touriha.tour.pnl.search</field>
+        <field name="model">touriha.tour</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <filter name="g_type" string="Loại tour" context="{'group_by': 'tour_type'}"/>
+                <filter name="g_state" string="Trạng thái" context="{'group_by': 'state'}"/>
+                <filter name="g_month" string="Tháng khởi hành"
+                        context="{'group_by': 'start_date:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_touriha_pnl" model="ir.actions.act_window">
+        <field name="name">P&amp;L theo Tour</field>
+        <field name="res_model">touriha.tour</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="view_touriha_pnl_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'sequence': 1, 'view_mode': 'list', 'view_id': ref('view_touriha_pnl_list')}),
+            (0, 0, {'sequence': 2, 'view_mode': 'pivot', 'view_id': ref('view_touriha_pnl_pivot')}),
+            (0, 0, {'sequence': 3, 'view_mode': 'graph', 'view_id': ref('view_touriha_pnl_graph')}),
+            (0, 0, {'sequence': 4, 'view_mode': 'form'})]"/>
+    </record>
+
+    <menuitem id="menu_touriha_report"
+              name="Báo cáo"
+              parent="touriha_base.touriha_root_menu"
+              sequence="50"/>
+    <menuitem id="menu_touriha_pnl"
+              name="P&amp;L theo Tour"
+              parent="menu_touriha_report"
+              action="action_touriha_pnl"
+              sequence="10"/>
+</odoo>

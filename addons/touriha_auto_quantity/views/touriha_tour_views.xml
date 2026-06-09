@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_touriha_tour_form_autoqty" model="ir.ui.view">
+        <field name="name">touriha.tour.form.autoqty</field>
+        <field name="model">touriha.tour</field>
+        <field name="inherit_id" ref="touriha_operations.view_touriha_tour_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='passengers']" position="after">
+                <page string="Định mức (Auto-Quantity)" name="auto_quantity">
+                    <group>
+                        <group string="Cấu hình">
+                            <field name="room_capacity"/>
+                            <field name="foc_per_pax"/>
+                        </group>
+                        <group string="Cơ cấu khách (tự tính)">
+                            <field name="pax_adult"/>
+                            <field name="pax_child_bed"/>
+                            <field name="pax_child_no_bed"/>
+                            <field name="pax_infant"/>
+                        </group>
+                    </group>
+                    <group string="Định mức tự tính từ danh sách hành khách">
+                        <group>
+                            <field name="room_count"/>
+                            <field name="meal_count"/>
+                        </group>
+                        <group>
+                            <field name="seat_count"/>
+                            <field name="foc_count"/>
+                        </group>
+                    </group>
+                    <div class="text-muted" colspan="2">
+                        Quy tắc: <b>suất ăn</b> — người lớn / trẻ có giường = 1, trẻ không giường = 0.5,
+                        em bé = 0; <b>ghế xe</b> — mọi khách trừ em bé; <b>phòng</b> — mỗi "Nhóm phòng"
+                        khai báo = 1 phòng, phần còn lại ghép theo số khách/phòng.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -48,7 +48,10 @@ class TourihaTour(models.Model):
     def action_create_purchase_orders(self):
         self.ensure_one()
         lines = self.costing_line_ids.filtered(
-            lambda l: l.finalized_price and l.supplier_id and not l.purchase_order_id
+            lambda l: l.finalized_price
+            and l.supplier_id
+            and l.product_id
+            and not l.purchase_order_id
         )
         if not lines:
             raise UserError(

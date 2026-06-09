@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_touriha_tour_form_auto_costing" model="ir.ui.view">
+        <field name="name">touriha.tour.form.auto_costing</field>
+        <field name="model">touriha.tour</field>
+        <field name="inherit_id" ref="touriha_operations.view_touriha_tour_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_fill_costing_from_quantity" type="object"
+                        string="Đổ định mức → chi phí" class="btn-secondary"
+                        invisible="passenger_count == 0"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

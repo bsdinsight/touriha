@@ -12,7 +12,19 @@ class TourihaCostingLine(models.Model):
         "touriha.tour", string="Tour", required=True, ondelete="cascade", index=True
     )
     currency_id = fields.Many2one(related="tour_id.currency_id")
-    product_id = fields.Many2one("product.product", string="Dịch vụ", required=True)
+    product_id = fields.Many2one("product.product", string="Dịch vụ")
+    service_type = fields.Selection(
+        [
+            ("hotel", "Khách sạn"),
+            ("transport", "Vận chuyển"),
+            ("meal", "Ăn uống"),
+            ("ticket", "Vé tham quan"),
+            ("guide", "HDV"),
+            ("other", "Khác"),
+        ],
+        string="Loại dịch vụ",
+        default="other",
+    )
     supplier_id = fields.Many2one(
         "res.partner", string="Nhà cung cấp", domain="[('supplier_rank', '>', 0)]"
     )
